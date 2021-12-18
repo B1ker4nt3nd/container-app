@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>
+  {{ titleText }}
+</h2>
+<mat-dialog-content>
+  <section *ngIf="detailsText" class="description">
+    {{ detailsText }}
+  </section>
+  <div class="dragndrop" appDragDrop (onFileDropped)="handleFileInput($event)">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="clickOnFileInput()"
+      class="upload-button"
+      [color]="attachButtonColor"
+      [disabled]="addFileDisabled"
+    >
+      <mat-icon>add</mat-icon>
+      {{ attachButtonText }}
+    </button>
+    <span class="actual-files-information">{{ filesInformation }}</span>
+  </div>
+  <input
+    type="file"
+    id="fileInput"
+    #fileInput
+    (change)="handleFileInput($event.target!.files)"
+    style="display: none"
+    [multiple]="isMultipleFileAllowed"
+    [accept]="acceptableExtensions"
+  />
+  <section class="link-container">
+    <div class="col-md-8 link-row" *ngFor="let item of data.files">
+      <span class="delete-icon-container" (click)="deleteRow(item)"
+        ><mat-icon>delete_outline</mat-icon></span
+      >
+      <span class="file-info-line-container">
+        <span
+          class="file-name"
+          (click)="downloadItem(item)"
+          [ngClass]="{
+            'file-link': isUrl(item),
+            'file-error': isError(item),
+            'file-in-progress': isInProcess(item)
+          }"
+          >{{ item.fileName }}</span
+        >
+        <span class="file-size">({{ item.size | filesize }})</span>
+        <span class="error-text" *ngIf="isError(item)">{{
+          getErrorMessage(item)
+        }}</span>
+      </span>
+      <span class="progress-bar-container">
+        <mat-progress-bar
+          class="progress-bar"
+          *ngIf="isInProgress(item)"
+          mode="determinate"
+          [value]="item.progressPercentage"
+        ></mat-progress-bar>
+      </span>
+    </div>
+  </section>
+  <div class="row">
+    <p *ngIf="hasError">
+      <span class="warning">
+        <strong>Warning!</strong> Please check the files for error. After
+        deletion of problematic items, you can save your changes.
+      </span>
+    </p>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button (click)="onCancel()" [color]="cancelButtonColor">
+    {{ cancelButtonText }}
+  </button>
+  <button
+    mat-raised-button
+    (click)="onOk()"
+    [color]="okButtonColor"
+    [disabled]="saveDisabled"
+  >
+    {{ okButtonText }}
+  </button>
+</mat-dialog-actions>
