@@ -15,3 +15,5 @@ Commands:
 
 - in package: `npm link`
 - in project: `npm link ngx-file-uploader`
+- in package: `ng build ngx-file-uploader --prod`
+- in package: `npm publish`
